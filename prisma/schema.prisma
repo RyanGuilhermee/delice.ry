@@ -6,3 +6,54 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id       String     @id @default(uuid())
+  name     String
+  email    String     @unique
+  password String
+  is_admin Boolean
+  orders   Orders[]
+  adresses Adresses[]
+
+  @@map("users")
+}
+
+model Menu {
+  id          String   @id @default(uuid())
+  category    String
+  name        String   @unique
+  price       Decimal
+  description String
+  image       String
+  available   Boolean
+  orders      Orders[]
+
+  @@map("menu")
+}
+
+model Orders {
+  id           String   @id @default(uuid())
+  payment_type String
+  quantity     Int
+  observations String
+  is_paid      Boolean
+  order_state  String
+  date         DateTime @default(now())
+  users        Users    @relation(fields: [user_id], references: [id])
+  menu         Menu     @relation(fields: [menu_id], references: [id])
+  user_id      String
+  menu_id      String
+
+  @@map("orders")
+}
+
+model Adresses {
+  id      String @id @default(uuid())
+  street  String
+  number  Int
+  users   Users  @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@map("adresses")
+}
