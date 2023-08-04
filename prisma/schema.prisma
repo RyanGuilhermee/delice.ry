@@ -12,7 +12,7 @@ model Users {
   name     String
   email    String     @unique
   password String
-  is_admin Boolean
+  is_admin Boolean    @default(false)
   orders   Orders[]
   adresses Adresses[]
 
