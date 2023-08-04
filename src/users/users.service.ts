@@ -5,7 +5,7 @@ import {
   IUsersRepository,
   UsersRepository,
 } from '../repositories/users.repository';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService implements IUsersRepository {
