@@ -18,7 +18,7 @@ export class AuthService {
       : null;
 
     if (!user || !isPassword) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User email or pessword wrong');
     }
 
     return {
@@ -37,7 +37,7 @@ export class AuthService {
       : null;
 
     if (!user || !isPassword) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User email or pessword wrong');
     }
 
     if (!user.is_admin) {
