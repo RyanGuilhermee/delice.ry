@@ -21,7 +21,9 @@ export class UsersRepository extends PrismaClient implements IUsersRepository {
   async create(createUserDto: CreateUserDto): Promise<FindUserDto> {
     const user = await this.users.create({
       data: {
-        ...createUserDto,
+        name: createUserDto.name,
+        email: createUserDto.email,
+        password: createUserDto.password,
       },
     });
 
