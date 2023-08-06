@@ -10,7 +10,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, password: string): Promise<any> {
+  async signIn(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);
 
     const isPassword = user
@@ -22,7 +22,33 @@ export class AuthService {
     }
 
     return {
-      access_token: await this.jwtService.signAsync({ user_id: user.id }),
+      access_token: await this.jwtService.signAsync(
+        { user_id: user.id },
+        { secret: process.env.JWT_SECRET },
+      ),
+    };
+  }
+
+  async signInAdmin(email: string, password: string) {
+    const user = await this.usersService.findOneByEmail(email);
+
+    const isPassword = user
+      ? await bcrypt.compare(password, user.password)
+      : null;
+
+    if (!user || !isPassword) {
+      throw new UnauthorizedException();
+    }
+
+    if (!user.is_admin) {
+      throw new UnauthorizedException('User is not admin');
+    }
+
+    return {
+      access_token: await this.jwtService.signAsync(
+        { user_id: user.id },
+        { secret: process.env.JWT_SECRET_ADMIN },
+      ),
     };
   }
 }

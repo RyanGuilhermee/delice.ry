@@ -11,4 +11,10 @@ export class AuthController {
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('login/admin')
+  signInAdmin(@Body() signInDto: SignInDto) {
+    return this.authService.signInAdmin(signInDto.email, signInDto.password);
+  }
 }
