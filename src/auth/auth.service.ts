@@ -21,12 +21,10 @@ export class AuthService {
       throw new UnauthorizedException('User email or pessword wrong');
     }
 
-    return {
-      access_token: await this.jwtService.signAsync(
-        { user_id: user.id },
-        { secret: process.env.JWT_SECRET },
-      ),
-    };
+    return await this.jwtService.signAsync(
+      { user_id: user.id },
+      { secret: process.env.JWT_SECRET },
+    );
   }
 
   async signInAdmin(email: string, password: string) {
@@ -44,11 +42,9 @@ export class AuthService {
       throw new UnauthorizedException('User is not admin');
     }
 
-    return {
-      access_token: await this.jwtService.signAsync(
-        { user_id: user.id },
-        { secret: process.env.JWT_SECRET_ADMIN },
-      ),
-    };
+    return await this.jwtService.signAsync(
+      { user_id: user.id },
+      { secret: process.env.JWT_SECRET_ADMIN },
+    );
   }
 }
