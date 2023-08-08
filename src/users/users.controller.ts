@@ -13,11 +13,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ApiResponse } from '@nestjs/swagger';
+import { CreateUserResponse } from './response_types/create-user.response';
+import { FindUserResponse } from './response_types/find-user.response';
+import { UpdateUserResponse } from './response_types/update-user.response';
+import { RemoveUserResponse } from './response_types/remove-user.response';
 
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiResponse({ status: 201, type: CreateUserResponse })
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
@@ -30,6 +36,7 @@ export class UsersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: FindUserResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Get(':id')
@@ -44,6 +51,7 @@ export class UsersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: UpdateUserResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Patch(':id')
@@ -56,6 +64,7 @@ export class UsersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: RemoveUserResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Delete(':id')
