@@ -3,6 +3,19 @@ import { PrismaClient } from '@prisma/client';
 import { CreateMenuDto } from '../menu/dto/create-menu.dto';
 import { FindMenuDto } from '../menu/dto/find-menu.dto';
 import { UpdateMenuDto } from '../menu/dto/update-menu.dto';
+import { contains } from 'class-validator';
+
+export type FindAllQuery = {
+  whereCondition:
+    | object
+    | {
+        category: string;
+      };
+  pagination: {
+    take: number;
+    skip: number;
+  };
+};
 
 export interface IMenuRepository {
   create(createMenuDto: CreateMenuDto): Promise<FindMenuDto>;
@@ -10,6 +23,10 @@ export interface IMenuRepository {
   findOne(id: string): Promise<FindMenuDto | null>;
 
   findByName(name: string): Promise<FindMenuDto | null>;
+
+  findAllByNameWithContains(name: string): Promise<FindMenuDto[]>;
+
+  findAll(findAllQuery: FindAllQuery): Promise<FindMenuDto[]>;
 
   update(id: string, updateMenuDto: UpdateMenuDto): Promise<string>;
 
@@ -31,6 +48,7 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     });
 
     const menuDto = new FindMenuDto();
+    menuDto.id = menu.id;
     menuDto.category = menu.category;
     menuDto.name = menu.name;
     menuDto.price = Number(menu.price);
@@ -51,6 +69,7 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     }
 
     const menuDto = new FindMenuDto();
+    menuDto.id = menu.id;
     menuDto.category = menu.category;
     menuDto.name = menu.name;
     menuDto.price = Number(menu.price);
@@ -71,6 +90,7 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     }
 
     const menuDto = new FindMenuDto();
+    menuDto.id = menu.id;
     menuDto.category = menu.category;
     menuDto.name = menu.name;
     menuDto.price = Number(menu.price);
@@ -79,6 +99,50 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     menuDto.available = menu.available;
 
     return menuDto;
+  }
+
+  async findAllByNameWithContains(name: string): Promise<FindMenuDto[]> {
+    const menus = await this.menu.findMany({
+      where: { name: { contains: name } },
+    });
+
+    const newFindMenuDto = menus.map((menu) => {
+      const menuDto = new FindMenuDto();
+      menuDto.id = menu.id;
+      menuDto.category = menu.category;
+      menuDto.name = menu.name;
+      menuDto.price = Number(menu.price);
+      menuDto.description = menu.description;
+      menuDto.image = menu.image;
+      menuDto.available = menu.available;
+
+      return menuDto;
+    });
+
+    return newFindMenuDto;
+  }
+
+  async findAll(findAllQuery: FindAllQuery) {
+    const menus = await this.menu.findMany({
+      take: findAllQuery.pagination.take,
+      skip: findAllQuery.pagination.skip,
+      where: findAllQuery.whereCondition,
+    });
+
+    const newFindMenuDto = menus.map((menu) => {
+      const menuDto = new FindMenuDto();
+      menuDto.id = menu.id;
+      menuDto.category = menu.category;
+      menuDto.name = menu.name;
+      menuDto.price = Number(menu.price);
+      menuDto.description = menu.description;
+      menuDto.image = menu.image;
+      menuDto.available = menu.available;
+
+      return menuDto;
+    });
+
+    return newFindMenuDto;
   }
 
   async update(id: string, updateMenuDto: UpdateMenuDto): Promise<string> {
