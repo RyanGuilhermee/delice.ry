@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { CreateMenuDto } from '../menu/dto/create-menu.dto';
 import { FindMenuDto } from '../menu/dto/find-menu.dto';
 import { UpdateMenuDto } from '../menu/dto/update-menu.dto';
-import { contains } from 'class-validator';
 
 export type FindAllQuery = {
   whereCondition:
