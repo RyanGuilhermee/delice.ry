@@ -9,6 +9,8 @@ export interface IMenuRepository {
 
   findOne(id: string): Promise<FindMenuDto | null>;
 
+  findByName(name: string): Promise<FindMenuDto | null>;
+
   update(id: string, updateMenuDto: UpdateMenuDto): Promise<string>;
 
   remove(id: string): Promise<string>;
@@ -42,6 +44,26 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
   async findOne(id: string): Promise<FindMenuDto | null> {
     const menu = await this.menu.findFirst({
       where: { id },
+    });
+
+    if (!menu) {
+      return null;
+    }
+
+    const menuDto = new FindMenuDto();
+    menuDto.category = menu.category;
+    menuDto.name = menu.name;
+    menuDto.price = Number(menu.price);
+    menuDto.description = menu.description;
+    menuDto.image = menu.image;
+    menuDto.available = menu.available;
+
+    return menuDto;
+  }
+
+  async findByName(name: string): Promise<FindMenuDto | null> {
+    const menu = await this.menu.findFirst({
+      where: { name },
     });
 
     if (!menu) {
