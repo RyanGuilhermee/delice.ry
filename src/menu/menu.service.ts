@@ -1,26 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
+import {
+  IMenuRepository,
+  MenuRepository,
+} from '../repositories/menu.repository';
+import { FindAllMenuDto } from './dto/findall-menu.dto';
 
 @Injectable()
-export class MenuService {
-  create(createMenuDto: CreateMenuDto) {
-    return 'This action adds a new menu';
+export class MenuService implements IMenuRepository {
+  constructor(private menuRepository: MenuRepository) {}
+
+  async create(createMenuDto: CreateMenuDto) {
+    const menu = await this.findByName(createMenuDto.name);
+
+    if (menu) {
+      throw new HttpException('Item already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.menuRepository.create(createMenuDto);
   }
 
-  findAll() {
-    return `This action returns all menu`;
+  async findAll(findAllMenuDto: FindAllMenuDto) {
+    if (
+      findAllMenuDto.category !== 'food' &&
+      findAllMenuDto.category !== 'drink'
+    ) {
+      findAllMenuDto.category = '';
+    }
+
+    if (!findAllMenuDto.quantity || isNaN(Number(findAllMenuDto.quantity))) {
+      findAllMenuDto.quantity = '10';
+    }
+
+    if (!findAllMenuDto.page || isNaN(Number(findAllMenuDto.page))) {
+      findAllMenuDto.page = '1';
+    }
+
+    const menus = await this.menuRepository.findAll(findAllMenuDto);
+
+    return menus;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} menu`;
+  findAllByNameWithContains(name: string) {
+    return this.menuRepository.findAllByNameWithContains(name);
   }
 
-  update(id: number, updateMenuDto: UpdateMenuDto) {
-    return `This action updates a #${id} menu`;
+  findOne(id: string) {
+    return this.menuRepository.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} menu`;
+  findByName(name: string) {
+    return this.menuRepository.findByName(name);
+  }
+
+  async update(id: string, updateMenuDto: UpdateMenuDto) {
+    const menu = await this.findByName(updateMenuDto.name);
+
+    if (menu) {
+      throw new HttpException(
+        'Item name already exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.menuRepository.update(id, updateMenuDto);
+  }
+
+  remove(id: string) {
+    return this.menuRepository.remove(id);
   }
 }
