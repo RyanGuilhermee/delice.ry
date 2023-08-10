@@ -3,18 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { CreateMenuDto } from '../menu/dto/create-menu.dto';
 import { FindMenuDto } from '../menu/dto/find-menu.dto';
 import { UpdateMenuDto } from '../menu/dto/update-menu.dto';
-
-export type FindAllQuery = {
-  whereCondition:
-    | object
-    | {
-        category: string;
-      };
-  pagination: {
-    take: number;
-    skip: number;
-  };
-};
+import { FindAllMenuDto } from '../menu/dto/findall-menu.dto';
 
 export interface IMenuRepository {
   create(createMenuDto: CreateMenuDto): Promise<FindMenuDto>;
@@ -25,7 +14,7 @@ export interface IMenuRepository {
 
   findAllByNameWithContains(name: string): Promise<FindMenuDto[]>;
 
-  findAll(findAllQuery: FindAllQuery): Promise<FindMenuDto[]>;
+  findAll(findAllMenuDto: FindAllMenuDto): Promise<FindMenuDto[]>;
 
   update(id: string, updateMenuDto: UpdateMenuDto): Promise<string>;
 
@@ -121,11 +110,15 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     return newFindMenuDto;
   }
 
-  async findAll(findAllQuery: FindAllQuery) {
+  async findAll(findAllMenuDto: FindAllMenuDto) {
     const menus = await this.menu.findMany({
-      take: findAllQuery.pagination.take,
-      skip: findAllQuery.pagination.skip,
-      where: findAllQuery.whereCondition,
+      take: Number(findAllMenuDto.quantity),
+      skip: Number(findAllMenuDto.page) - 1,
+      where: findAllMenuDto.category
+        ? {
+            category: findAllMenuDto.category,
+          }
+        : {},
     });
 
     const newFindMenuDto = menus.map((menu) => {
@@ -157,7 +150,7 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
       },
     });
 
-    return 'Menu updated successfully!';
+    return 'Item updated successfully!';
   }
 
   async remove(id: string): Promise<string> {
@@ -165,6 +158,6 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
       where: { id },
     });
 
-    return 'Menu removed successfully!';
+    return 'Item removed successfully!';
   }
 }
