@@ -3,9 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UsersModule, AuthModule, MenuModule],
+  imports: [ConfigModule.forRoot(), UsersModule, AuthModule, MenuModule, OrdersModule],
   controllers: [],
   providers: [],
 })
