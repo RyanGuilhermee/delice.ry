@@ -6,7 +6,13 @@ import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UsersModule, AuthModule, MenuModule, OrdersModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UsersModule,
+    AuthModule,
+    MenuModule,
+    OrdersModule,
+  ],
   controllers: [],
   providers: [],
 })
