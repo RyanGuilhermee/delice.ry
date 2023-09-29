@@ -6,6 +6,7 @@ import {
   Min,
   IsEnum,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum PaymentType {
   MONEY = 'money',
@@ -19,36 +20,44 @@ enum OrderState {
 }
 
 export class CreateOrderDto {
+  @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   @IsEnum(PaymentType)
   paymentType: string;
 
+  @ApiProperty({ type: 'number' })
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
   quantity: number;
 
+  @ApiProperty({ type: 'boolean' })
   @IsNotEmpty()
   @IsBoolean()
   delivery: boolean;
 
+  @ApiProperty({ type: 'string' })
   @IsString()
   observations: string;
 
+  @ApiProperty({ type: 'boolean' })
   @IsNotEmpty()
   @IsBoolean()
   isPaid: boolean;
 
+  @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   @IsEnum(OrderState)
   orderState: string;
 
+  @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   userId: string;
 
+  @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   menuId: string;

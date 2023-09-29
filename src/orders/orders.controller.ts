@@ -15,11 +15,18 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { FindAllOrderDto } from './dto/findall-order.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { CreateOrderResponse } from './response_types/create-order.response';
+import { FindAllOrderResponse } from './response_types/findall-order.response';
+import { FindOrderResponse } from './response_types/find-order.response';
+import { UpdateOrderResponse } from './response_types/update-order.response';
+import { RemoveOrderResponse } from './response_types/remove-order.response';
 
 @Controller('api/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @ApiResponse({ status: 201, type: CreateOrderResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Post()
@@ -32,6 +39,28 @@ export class OrdersController {
     };
   }
 
+  @ApiQuery({
+    name: 'page',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'quantity',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'userId',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'orderState',
+    type: String,
+    enum: ['created', 'confirmed', 'preparing', 'delivering', 'done'],
+    required: true,
+  })
+  @ApiResponse({ status: 200, type: FindAllOrderResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Get()
@@ -44,6 +73,7 @@ export class OrdersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: FindOrderResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Get(':id')
@@ -56,6 +86,7 @@ export class OrdersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: UpdateOrderResponse })
   @Roles('admin')
   @UseGuards(AuthGuard)
   @Patch(':id')
@@ -71,6 +102,7 @@ export class OrdersController {
     };
   }
 
+  @ApiResponse({ status: 200, type: RemoveOrderResponse })
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @Delete(':id')
