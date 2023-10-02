@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import {
@@ -6,10 +13,15 @@ import {
   MenuRepository,
 } from '../repositories/menu.repository';
 import { FindAllMenuDto } from './dto/findall-menu.dto';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class MenuService implements IMenuRepository {
-  constructor(private menuRepository: MenuRepository) {}
+  constructor(
+    @Inject(forwardRef(() => OrdersService))
+    private ordersService: OrdersService,
+    private menuRepository: MenuRepository,
+  ) {}
 
   async create(createMenuDto: CreateMenuDto) {
     const menu = await this.findByName(createMenuDto.name);
@@ -67,7 +79,15 @@ export class MenuService implements IMenuRepository {
     return this.menuRepository.update(id, updateMenuDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const order = await this.ordersService.orderHasMenuId(id);
+
+    if (order) {
+      throw new BadRequestException(
+        'Unable to remove menu because there are currently active orders',
+      );
+    }
+
     return this.menuRepository.remove(id);
   }
 }
