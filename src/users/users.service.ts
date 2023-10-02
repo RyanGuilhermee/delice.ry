@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
@@ -6,10 +13,15 @@ import {
   UsersRepository,
 } from '../repositories/users.repository';
 import * as bcrypt from 'bcrypt';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class UsersService implements IUsersRepository {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    @Inject(forwardRef(() => OrdersService))
+    private ordersService: OrdersService,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.findOneByEmail(createUserDto.email);
@@ -41,7 +53,15 @@ export class UsersService implements IUsersRepository {
     return this.usersRepository.update(id, updateUserDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const order = await this.ordersService.orderHasUserId(id);
+
+    if (order) {
+      throw new BadRequestException(
+        'Unable to remove user because there are currently active orders',
+      );
+    }
+
     return this.usersRepository.remove(id);
   }
 }

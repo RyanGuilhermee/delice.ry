@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateOrderDto, PaymentType } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -16,8 +18,9 @@ import { MenuService } from '../menu/menu.service';
 @Injectable()
 export class OrdersService implements IOrdersRepository {
   constructor(
-    private ordersRepository: OrdersRepository,
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+    private ordersRepository: OrdersRepository,
     private menuService: MenuService,
   ) {}
 
@@ -75,5 +78,13 @@ export class OrdersService implements IOrdersRepository {
 
   remove(id: string) {
     return this.ordersRepository.remove(id);
+  }
+
+  orderHasUserId(userId: string) {
+    return this.ordersRepository.orderHasUserId(userId);
+  }
+
+  orderHasMenuId(menuId: string) {
+    return this.ordersRepository.orderHasMenuId(menuId);
   }
 }

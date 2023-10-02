@@ -24,6 +24,10 @@ export interface IOrdersRepository {
     }[]
   >;
 
+  orderHasUserId(userId: string): Promise<boolean>;
+
+  orderHasMenuId(menuId: string): Promise<boolean>;
+
   update(id: string, UpdateOrderDto: UpdateOrderDto): Promise<string>;
 
   remove(id: string): Promise<string>;
@@ -101,6 +105,30 @@ export class OrdersRepository
       user: userDto,
       menu: menuDto,
     };
+  }
+
+  async orderHasUserId(userId: string): Promise<boolean> {
+    const order = await this.orders.findFirst({
+      where: { user_id: userId },
+    });
+
+    if (!order) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async orderHasMenuId(menuId: string): Promise<boolean> {
+    const order = await this.orders.findFirst({
+      where: { menu_id: menuId },
+    });
+
+    if (!order) {
+      return false;
+    }
+
+    return true;
   }
 
   async findAll(findAllOrderDto: FindAllOrderDto) {

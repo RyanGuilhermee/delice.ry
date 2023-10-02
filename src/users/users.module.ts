@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { UsersRepository } from 'src/repositories/users.repository';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { UsersRepository } from '../repositories/users.repository';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { OrdersService } from 'src/orders/orders.service';
+import { OrdersRepository } from 'src/repositories/orders.repostory';
+import { MenuService } from '../menu/menu.service';
+import { MenuRepository } from '../repositories/menu.repository';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository, AuthGuard],
+  providers: [
+    UsersService,
+    UsersRepository,
+    AuthGuard,
+    MenuService,
+    MenuRepository,
+    OrdersService,
+    OrdersRepository,
+  ],
 })
 export class UsersModule {}
