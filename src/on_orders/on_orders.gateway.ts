@@ -2,37 +2,83 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { OnOrdersService } from './on_orders.service';
-import { CreateOnOrderDto } from './dto/create-on_order.dto';
-import { UpdateOnOrderDto } from './dto/update-on_order.dto';
+import { Server, Socket } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Data } from './dto/data-on_order.dto';
 
-@WebSocketGateway()
+@WebSocketGateway(3001, { cors: true })
 export class OnOrdersGateway {
-  constructor(private readonly onOrdersService: OnOrdersService) {}
+  @WebSocketServer()
+  server: Server;
+  adminClientId: string;
 
-  @SubscribeMessage('createOnOrder')
-  create(@MessageBody() createOnOrderDto: CreateOnOrderDto) {
-    return this.onOrdersService.create(createOnOrderDto);
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('join')
+  onAdminJoined(@ConnectedSocket() client: Socket) {
+    this.adminClientId = client.id;
+
+    client.emit('joined', { status: 200, message: 'admin joined' });
   }
 
-  @SubscribeMessage('findAllOnOrders')
-  findAll() {
-    return this.onOrdersService.findAll();
+  @Roles('admin', 'everyone')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('created')
+  onCreated(@ConnectedSocket() client: Socket) {
+    client.to(this.adminClientId).emit('created', {
+      status: 200,
+      clientId: client.id,
+      message: 'order created',
+    });
   }
 
-  @SubscribeMessage('findOneOnOrder')
-  findOne(@MessageBody() id: number) {
-    return this.onOrdersService.findOne(id);
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('confirmed')
+  onConfirmed(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
+    client
+      .to(data.clientId)
+      .emit('confirmed', { status: 200, message: 'order confirmed' });
   }
 
-  @SubscribeMessage('updateOnOrder')
-  update(@MessageBody() updateOnOrderDto: UpdateOnOrderDto) {
-    return this.onOrdersService.update(updateOnOrderDto.id, updateOnOrderDto);
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('preparing')
+  onPreparing(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
+    client
+      .to(data.clientId)
+      .emit('preparing', { status: 200, message: 'preparing order' });
   }
 
-  @SubscribeMessage('removeOnOrder')
-  remove(@MessageBody() id: number) {
-    return this.onOrdersService.remove(id);
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('already')
+  onAlready(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
+    client
+      .to(data.clientId)
+      .emit('everyone', { status: 200, message: 'order is already' });
+  }
+
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('delivering')
+  onDelivering(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
+    client
+      .to(data.clientId)
+      .emit('delivering', { status: 200, message: 'delivering order' });
+  }
+
+  @Roles('admin')
+  @UseGuards(AuthGuard)
+  @SubscribeMessage('done')
+  onDone(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
+    client
+      .to(data.clientId)
+      .emit('done', { status: 200, message: 'order is done' });
   }
 }

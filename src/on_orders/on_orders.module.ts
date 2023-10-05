@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { OnOrdersService } from './on_orders.service';
 import { OnOrdersGateway } from './on_orders.gateway';
 
 @Module({
-  providers: [OnOrdersGateway, OnOrdersService],
+  providers: [OnOrdersGateway],
 })
 export class OnOrdersModule {}
