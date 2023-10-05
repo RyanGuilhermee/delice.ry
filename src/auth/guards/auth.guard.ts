@@ -6,7 +6,16 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { WsException } from '@nestjs/websockets';
 import { Request } from 'express';
+
+interface WsRequest extends Request {
+  handshake: {
+    headers: {
+      authorization: string;
+    };
+  };
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,8 +25,13 @@ export class AuthGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+    const isWsRequest = this.verifyWsRequest(request);
 
     if (!token) {
+      if (isWsRequest) {
+        throw new WsException('Token is missing');
+      }
+
       throw new UnauthorizedException('Token is missing');
     }
 
@@ -27,6 +41,10 @@ export class AuthGuard implements CanActivate {
         (await this.verifyToken(token, process.env.JWT_SECRET));
 
       if (!isValid) {
+        if (isWsRequest) {
+          throw new WsException('Invalid token');
+        }
+
         throw new UnauthorizedException('Invalid token');
       }
 
@@ -40,6 +58,10 @@ export class AuthGuard implements CanActivate {
       );
 
       if (!isValid) {
+        if (isWsRequest) {
+          throw new WsException('Invalid token');
+        }
+
         throw new UnauthorizedException('Invalid token');
       }
 
@@ -49,13 +71,26 @@ export class AuthGuard implements CanActivate {
     const isValid = await this.verifyToken(token, process.env.JWT_SECRET);
 
     if (!isValid) {
+      if (isWsRequest) {
+        throw new WsException('Invalid token');
+      }
+
       throw new UnauthorizedException('Invalid token');
     }
 
     return true;
   }
 
-  private extractTokenFromHeader(request: Request) {
+  private verifyWsRequest(request: WsRequest) {
+    return !!request.handshake;
+  }
+
+  private extractTokenFromHeader(request: WsRequest) {
+    // websocket request
+    if (request.handshake) {
+      return request.handshake.headers.authorization;
+    }
+
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
 
     return type === 'Bearer' ? token : undefined;
