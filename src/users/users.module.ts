@@ -7,6 +7,7 @@ import { OrdersService } from 'src/orders/orders.service';
 import { OrdersRepository } from 'src/repositories/orders.repostory';
 import { MenuService } from '../menu/menu.service';
 import { MenuRepository } from '../repositories/menu.repository';
+import { PaymentService } from '../payment/payment.service';
 
 @Module({
   controllers: [UsersController],
@@ -18,6 +19,7 @@ import { MenuRepository } from '../repositories/menu.repository';
     MenuRepository,
     OrdersService,
     OrdersRepository,
+    PaymentService,
   ],
 })
 export class UsersModule {}

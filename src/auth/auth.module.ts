@@ -8,6 +8,7 @@ import { OrdersService } from '../orders/orders.service';
 import { OrdersRepository } from '../repositories/orders.repostory';
 import { MenuService } from '../menu/menu.service';
 import { MenuRepository } from '../repositories/menu.repository';
+import { PaymentService } from '../payment/payment.service';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MenuRepository } from '../repositories/menu.repository';
     OrdersRepository,
     MenuService,
     MenuRepository,
+    PaymentService,
     JwtService,
   ],
 })

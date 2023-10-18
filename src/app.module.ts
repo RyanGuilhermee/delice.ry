@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 import { OnOrdersModule } from './on_orders/on_orders.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OnOrdersModule } from './on_orders/on_orders.module';
     MenuModule,
     OrdersModule,
     OnOrdersModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [],

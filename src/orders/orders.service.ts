@@ -14,6 +14,7 @@ import {
 import { FindAllOrderDto } from './dto/findall-order.dto';
 import { UsersService } from '../users/users.service';
 import { MenuService } from '../menu/menu.service';
+import { PaymentService } from '../payment/payment.service';
 
 @Injectable()
 export class OrdersService implements IOrdersRepository {
@@ -22,6 +23,7 @@ export class OrdersService implements IOrdersRepository {
     private usersService: UsersService,
     private ordersRepository: OrdersRepository,
     private menuService: MenuService,
+    private paymentService: PaymentService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -38,9 +40,22 @@ export class OrdersService implements IOrdersRepository {
 
     if (
       createOrderDto.paymentType !== PaymentType.MONEY &&
-      !createOrderDto.isPaid
+      !createOrderDto.paymentId
     ) {
-      throw new BadRequestException('Payment needs to be made to continue');
+      throw new BadRequestException('Payment id missing');
+    }
+
+    if (
+      createOrderDto.paymentType !== PaymentType.MONEY &&
+      createOrderDto.paymentId
+    ) {
+      const paymentResponse = await this.paymentService.findOne(
+        createOrderDto.paymentId,
+      );
+
+      if (paymentResponse.status !== 'approved') {
+        throw new BadRequestException('Payment rejected');
+      }
     }
 
     return this.ordersRepository.create(createOrderDto);

@@ -23,9 +23,9 @@ export class PaymentService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     try {
-      const payment = await this.payment.get({ id });
+      const payment = await this.payment.get({ id: id.toString() });
 
       return payment;
     } catch (error) {

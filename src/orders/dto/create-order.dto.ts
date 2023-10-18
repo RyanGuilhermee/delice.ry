@@ -27,6 +27,10 @@ export class CreateOrderDto {
   paymentType: string;
 
   @ApiProperty({ type: 'number' })
+  @IsNumber()
+  paymentId: number;
+
+  @ApiProperty({ type: 'number' })
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
@@ -40,11 +44,6 @@ export class CreateOrderDto {
   @ApiProperty({ type: 'string' })
   @IsString()
   observations: string;
-
-  @ApiProperty({ type: 'boolean' })
-  @IsNotEmpty()
-  @IsBoolean()
-  isPaid: boolean;
 
   @ApiProperty({ type: 'string' })
   @IsNotEmpty()

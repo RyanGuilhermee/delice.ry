@@ -45,7 +45,7 @@ export class OrdersRepository
         delivery: createOrderDto.delivery,
         quantity: createOrderDto.quantity,
         observations: createOrderDto.observations,
-        is_paid: createOrderDto.isPaid,
+        is_paid: false,
         order_state: createOrderDto.orderState,
         user_id: createOrderDto.userId,
         menu_id: createOrderDto.menuId,
