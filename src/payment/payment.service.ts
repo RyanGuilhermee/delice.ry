@@ -1,13 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 @Injectable()
 export class PaymentService {
-  create(createPaymentDto: CreatePaymentDto) {
-    return 'This action adds a new payment';
+  private client = new MercadoPagoConfig({
+    accessToken: process.env.PAYMENT_ACCESS_TOKEN,
+  });
+  private payment = new Payment(this.client);
+
+  async create(createPaymentDto: CreatePaymentDto) {
+    try {
+      const paymentResponse = await this.payment.create({
+        body: {
+          ...createPaymentDto,
+        },
+      });
+
+      return paymentResponse;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} payment`;
+  async findOne(id: string) {
+    try {
+      const payment = await this.payment.get({ id });
+
+      return payment;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
