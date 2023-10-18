@@ -29,10 +29,11 @@ export class OnOrdersGateway {
   @Roles('admin', 'everyone')
   @UseGuards(AuthGuard)
   @SubscribeMessage('created')
-  onCreated(@ConnectedSocket() client: Socket) {
+  onCreated(@MessageBody() orderId: string, @ConnectedSocket() client: Socket) {
     client.to(this.adminClientId).emit('created', {
       status: 200,
       clientId: client.id,
+      orderId,
       message: 'order created',
     });
   }
