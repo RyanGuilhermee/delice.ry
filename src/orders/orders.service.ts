@@ -38,6 +38,10 @@ export class OrdersService implements IOrdersRepository {
       throw new BadRequestException('Invalid menu id');
     }
 
+    if (createOrderDto.paymentType === PaymentType.MONEY) {
+      createOrderDto.isPaid = false;
+    }
+
     if (
       createOrderDto.paymentType !== PaymentType.MONEY &&
       !createOrderDto.paymentId
@@ -56,6 +60,8 @@ export class OrdersService implements IOrdersRepository {
       if (paymentResponse.status !== 'approved') {
         throw new BadRequestException('Payment rejected');
       }
+
+      createOrderDto.isPaid = true;
     }
 
     return this.ordersRepository.create(createOrderDto);

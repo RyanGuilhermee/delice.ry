@@ -45,6 +45,8 @@ export class CreateOrderDto {
   @IsString()
   observations: string;
 
+  isPaid: boolean;
+
   @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
