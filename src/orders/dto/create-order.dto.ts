@@ -5,8 +5,10 @@ import {
   IsNumber,
   Min,
   IsEnum,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export enum PaymentType {
   MONEY = 'money',
@@ -17,6 +19,19 @@ export enum PaymentType {
 
 enum OrderState {
   CREATED = 'created',
+}
+
+class Orders {
+  @ApiProperty({ type: 'string' })
+  @IsNotEmpty()
+  @IsString()
+  menuId: string;
+
+  @ApiProperty({ type: 'number' })
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  quantity: number;
 }
 
 export class CreateOrderDto {
@@ -30,10 +45,6 @@ export class CreateOrderDto {
   @IsNumber()
   paymentId: number;
 
-  @ApiProperty({ type: 'number' })
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
   quantity: number;
 
   @ApiProperty({ type: 'boolean' })
@@ -58,8 +69,11 @@ export class CreateOrderDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ type: 'string' })
-  @IsNotEmpty()
-  @IsString()
   menuId: string;
+
+  @ApiProperty({ type: [Orders] })
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => Orders)
+  orders: Orders[];
 }

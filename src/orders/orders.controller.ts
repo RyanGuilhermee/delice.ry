@@ -31,11 +31,11 @@ export class OrdersController {
   @UseGuards(AuthGuard)
   @Post()
   async create(@Body() createOrderDto: CreateOrderDto) {
-    const order = await this.ordersService.create(createOrderDto);
+    const userId = await this.ordersService.create(createOrderDto);
 
     return {
       statusCode: 201,
-      order,
+      userId,
     };
   }
 

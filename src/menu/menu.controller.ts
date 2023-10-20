@@ -58,7 +58,7 @@ export class MenuController {
     required: false,
   })
   @ApiResponse({ status: 200, type: FindAllMenuResponse })
-  @Roles('admin')
+  @Roles('admin, everyone')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query() findAllMenuDto: FindAllMenuDto) {

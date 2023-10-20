@@ -8,7 +8,7 @@ import { FindMenuDto } from '../menu/dto/find-menu.dto';
 import { FindAllOrderDto } from '../orders/dto/findall-order.dto';
 
 export interface IOrdersRepository {
-  create(CreateOrderDto: CreateOrderDto): Promise<FindOrderDto>;
+  create(CreateOrderDto: CreateOrderDto): Promise<string>;
 
   findOne(id: string): Promise<{
     order: FindOrderDto;
@@ -38,7 +38,7 @@ export class OrdersRepository
   extends PrismaClient
   implements IOrdersRepository
 {
-  async create(createOrderDto: CreateOrderDto): Promise<FindOrderDto> {
+  async create(createOrderDto: CreateOrderDto): Promise<string> {
     const order = await this.orders.create({
       data: {
         payment_type: createOrderDto.paymentType,
@@ -52,12 +52,7 @@ export class OrdersRepository
       },
     });
 
-    const orderDto = new FindOrderDto();
-    orderDto.id = order.id;
-    orderDto.userId = order.user_id;
-    orderDto.menuId = order.menu_id;
-
-    return orderDto;
+    return order.user_id;
   }
 
   async findOne(id: string): Promise<{

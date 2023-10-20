@@ -64,7 +64,16 @@ export class OrdersService implements IOrdersRepository {
       createOrderDto.isPaid = true;
     }
 
-    return this.ordersRepository.create(createOrderDto);
+    let userId = '';
+
+    for await (const order of createOrderDto.orders) {
+      createOrderDto.menuId = order.menuId;
+      createOrderDto.quantity = order.quantity;
+
+      userId = await this.ordersRepository.create(createOrderDto);
+    }
+
+    return userId;
   }
 
   async findAll(findAllOrderDto: FindAllOrderDto) {
