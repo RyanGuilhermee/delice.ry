@@ -6,6 +6,7 @@ import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 import { OnOrdersModule } from './on_orders/on_orders.module';
 import { PaymentModule } from './payment/payment.module';
+import { AdressesModule } from './adresses/adresses.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PaymentModule } from './payment/payment.module';
     OrdersModule,
     OnOrdersModule,
     PaymentModule,
+    AdressesModule,
   ],
   controllers: [],
   providers: [],
