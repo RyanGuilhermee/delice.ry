@@ -36,8 +36,14 @@ export class UsersService implements IUsersRepository {
     return this.usersRepository.create(createUserDto);
   }
 
-  findOne(id: string) {
-    return this.usersRepository.findOne(id);
+  async findOne(id: string) {
+    const user = await this.usersRepository.findOne(id);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+
+    return user;
   }
 
   findOneByEmail(email: string) {
@@ -45,6 +51,8 @@ export class UsersService implements IUsersRepository {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
+
     if (updateUserDto.password) {
       const hashPassword = await bcrypt.hash(updateUserDto.password, 10);
       updateUserDto.password = hashPassword;
@@ -54,6 +62,8 @@ export class UsersService implements IUsersRepository {
   }
 
   async remove(id: string) {
+    await this.findOne(id);
+
     const order = await this.ordersService.orderHasUserId(id);
 
     if (order) {
