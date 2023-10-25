@@ -54,10 +54,6 @@ export class MenuService implements IMenuRepository {
     return menus;
   }
 
-  findAllByNameWithContains(name: string) {
-    return this.menuRepository.findAllByNameWithContains(name);
-  }
-
   findOne(id: string) {
     return this.menuRepository.findOne(id);
   }

@@ -12,8 +12,6 @@ export interface IMenuRepository {
 
   findByName(name: string): Promise<FindMenuDto | null>;
 
-  findAllByNameWithContains(name: string): Promise<FindMenuDto[]>;
-
   findAll(findAllMenuDto: FindAllMenuDto): Promise<FindMenuDto[]>;
 
   update(id: string, updateMenuDto: UpdateMenuDto): Promise<string>;
@@ -89,27 +87,6 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     return menuDto;
   }
 
-  async findAllByNameWithContains(name: string): Promise<FindMenuDto[]> {
-    const menus = await this.menu.findMany({
-      where: { name: { contains: name } },
-    });
-
-    const newFindMenuDto = menus.map((menu) => {
-      const menuDto = new FindMenuDto();
-      menuDto.id = menu.id;
-      menuDto.category = menu.category;
-      menuDto.name = menu.name;
-      menuDto.price = Number(menu.price);
-      menuDto.description = menu.description;
-      menuDto.image = menu.image;
-      menuDto.available = menu.available;
-
-      return menuDto;
-    });
-
-    return newFindMenuDto;
-  }
-
   async findAll(findAllMenuDto: FindAllMenuDto) {
     const menus = await this.menu.findMany({
       take: Number(findAllMenuDto.quantity),
@@ -118,6 +95,8 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
         ? {
             category: findAllMenuDto.category,
           }
+        : findAllMenuDto.name
+        ? { name: { contains: findAllMenuDto.name } }
         : {},
     });
 
