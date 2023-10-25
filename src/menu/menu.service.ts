@@ -54,8 +54,14 @@ export class MenuService implements IMenuRepository {
     return menus;
   }
 
-  findOne(id: string) {
-    return this.menuRepository.findOne(id);
+  async findOne(id: string) {
+    const menu = await this.menuRepository.findOne(id);
+
+    if (!menu) {
+      throw new HttpException('Menu not found', HttpStatus.NOT_FOUND);
+    }
+
+    return menu;
   }
 
   findByName(name: string) {
@@ -63,6 +69,8 @@ export class MenuService implements IMenuRepository {
   }
 
   async update(id: string, updateMenuDto: UpdateMenuDto) {
+    await this.findOne(id);
+
     const menu = await this.findByName(updateMenuDto.name);
 
     if (menu) {
@@ -76,6 +84,8 @@ export class MenuService implements IMenuRepository {
   }
 
   async remove(id: string) {
+    await this.findOne(id);
+
     const order = await this.ordersService.orderHasMenuId(id);
 
     if (order) {
