@@ -40,7 +40,7 @@ export class UsersService implements IUsersRepository {
     const user = await this.usersRepository.findOne(id);
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     return user;
