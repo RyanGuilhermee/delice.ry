@@ -71,7 +71,7 @@ export class MenuController {
   }
 
   @ApiResponse({ status: 200, type: FindMenuResponse })
-  @Roles('admin')
+  @Roles('admin, everyone')
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
