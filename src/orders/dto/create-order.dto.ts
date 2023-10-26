@@ -21,7 +21,7 @@ enum OrderState {
   CREATED = 'created',
 }
 
-class Orders {
+export class Orders {
   @ApiProperty({ type: 'string' })
   @IsNotEmpty()
   @IsString()
