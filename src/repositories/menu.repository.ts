@@ -14,6 +14,8 @@ export interface IMenuRepository {
 
   findAll(findAllMenuDto: FindAllMenuDto): Promise<FindMenuDto[]>;
 
+  findAllMenuIds(): Promise<{ id: string }[]>;
+
   update(id: string, updateMenuDto: UpdateMenuDto): Promise<string>;
 
   remove(id: string): Promise<string>;
@@ -114,6 +116,12 @@ export class MenuRepository extends PrismaClient implements IMenuRepository {
     });
 
     return newFindMenuDto;
+  }
+
+  async findAllMenuIds() {
+    const menuIds = await this.menu.findMany({ select: { id: true } });
+
+    return menuIds;
   }
 
   async update(id: string, updateMenuDto: UpdateMenuDto): Promise<string> {
