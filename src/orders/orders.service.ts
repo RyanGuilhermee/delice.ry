@@ -28,14 +28,19 @@ export class OrdersService implements IOrdersRepository {
 
   async create(createOrderDto: CreateOrderDto) {
     const user = await this.usersService.findOne(createOrderDto.userId);
-    const menu = await this.menuService.findOne(createOrderDto.menuId);
 
     if (!user) {
       throw new BadRequestException('Invalid user id');
     }
 
-    if (!menu) {
-      throw new BadRequestException('Invalid menu id');
+    const menuIds = await this.menuService.findAllMenuIds();
+
+    for (const order of createOrderDto.orders) {
+      const menu = menuIds.find((menu) => menu.id === order.menuId);
+
+      if (!menu) {
+        throw new BadRequestException('Invalid menu id');
+      }
     }
 
     if (createOrderDto.paymentType === PaymentType.MONEY) {
