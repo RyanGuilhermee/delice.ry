@@ -54,6 +54,10 @@ export class MenuService implements IMenuRepository {
     return menus;
   }
 
+  findAllMenuIds() {
+    return this.menuRepository.findAllMenuIds();
+  }
+
   async findOne(id: string) {
     const menu = await this.menuRepository.findOne(id);
 
