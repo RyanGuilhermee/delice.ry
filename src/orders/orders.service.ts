@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   forwardRef,
@@ -103,15 +105,25 @@ export class OrdersService implements IOrdersRepository {
     return this.ordersRepository.findAll(findAllOrderDto);
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
+    const order = await this.ordersRepository.findOne(id);
+
+    if (!order) {
+      throw new HttpException('order not found', HttpStatus.NOT_FOUND);
+    }
+
     return this.ordersRepository.findOne(id);
   }
 
-  update(id: string, updateOrderDto: UpdateOrderDto) {
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    await this.findOne(id);
+
     return this.ordersRepository.update(id, updateOrderDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    await this.findOne(id);
+
     return this.ordersRepository.remove(id);
   }
 
