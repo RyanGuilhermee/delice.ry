@@ -60,7 +60,7 @@ export class OrdersService implements IOrdersRepository {
       createOrderDto.paymentType !== PaymentType.MONEY &&
       createOrderDto.paymentId
     ) {
-      const paymentResponse = await this.paymentService.findOne(
+      const paymentResponse = await this.paymentService.findPayment(
         createOrderDto.paymentId,
       );
 

@@ -95,7 +95,7 @@ describe('OrdersService', () => {
         { id: '123456' },
       ]);
 
-      paymentService.findOne.mockResolvedValueOnce({
+      paymentService.findPayment.mockResolvedValueOnce({
         status: 'approved',
         api_response: { headers: ['', []], status: 200 },
       });
@@ -191,7 +191,7 @@ describe('OrdersService', () => {
         { id: '123456' },
       ]);
 
-      paymentService.findOne.mockResolvedValueOnce({
+      paymentService.findPayment.mockResolvedValueOnce({
         status: 'rejected',
         api_response: { headers: ['', []], status: 200 },
       });
