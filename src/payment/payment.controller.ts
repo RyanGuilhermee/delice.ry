@@ -15,7 +15,9 @@ export class PaymentController {
   @UseGuards(AuthGuard)
   @Post()
   async create(@Body() createPaymentDto: CreatePaymentDto) {
-    const paymentResponse = await this.paymentService.create(createPaymentDto);
+    const paymentResponse = await this.paymentService.createPayment(
+      createPaymentDto,
+    );
 
     return {
       statusCode: 201,
