@@ -8,6 +8,7 @@ import { OrdersRepository } from '../repositories/orders.repostory';
 import { UsersService } from '../users/users.service';
 import { UsersRepository } from '../repositories/users.repository';
 import { PaymentService } from '../payment/payment.service';
+import { PaymentRepository } from '../repositories/payment.repository';
 
 @Module({
   controllers: [MenuController],
@@ -20,6 +21,7 @@ import { PaymentService } from '../payment/payment.service';
     OrdersService,
     OrdersRepository,
     PaymentService,
+    PaymentRepository,
   ],
 })
 export class MenuModule {}
