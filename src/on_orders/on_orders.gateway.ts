@@ -62,7 +62,7 @@ export class OnOrdersGateway {
   onAlready(@MessageBody() data: Data, @ConnectedSocket() client: Socket) {
     client
       .to(data.clientId)
-      .emit('everyone', { status: 200, message: 'order is already' });
+      .emit('already', { status: 200, message: 'order is already' });
   }
 
   @Roles('admin')
