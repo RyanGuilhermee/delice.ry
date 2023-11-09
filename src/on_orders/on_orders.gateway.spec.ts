@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OnOrdersGateway } from './on_orders.gateway';
 import { DeepMocked, createMock } from '@golevelup/ts-jest';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Data } from './dto/data-on_order.dto';
 
 describe('OnOrdersGateway', () => {
