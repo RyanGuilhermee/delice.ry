@@ -38,4 +38,18 @@ describe('PaymentService', () => {
       });
     });
   });
+
+  describe('findPayment', () => {
+    it('should successfully find a payment', async () => {
+      paymentRepository.findPayment.mockResolvedValueOnce({
+        status: 'approved',
+        api_response: { headers: ['', []], status: 200 },
+      });
+
+      await expect(service.findPayment(1)).resolves.toEqual({
+        status: 'approved',
+        api_response: { headers: ['', []], status: 200 },
+      });
+    });
+  });
 });
