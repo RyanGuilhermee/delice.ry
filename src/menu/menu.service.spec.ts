@@ -172,6 +172,20 @@ describe('MenuService', () => {
     });
   });
 
+  describe('findAllMenuIds', () => {
+    it('should successfully find all menu ids ', async () => {
+      menuRepository.findAllMenuIds.mockResolvedValueOnce([
+        { id: '123' },
+        { id: '124' },
+      ]);
+
+      await expect(service.findAllMenuIds()).resolves.toEqual([
+        { id: '123' },
+        { id: '124' },
+      ]);
+    });
+  });
+
   describe('findOne', () => {
     it('should successfully find a menu', async () => {
       const id = '123';
