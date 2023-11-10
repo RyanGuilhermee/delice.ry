@@ -36,7 +36,7 @@ describe('AdressesController', () => {
       adressesService.create.mockResolvedValueOnce(adress);
 
       await expect(controller.create(new CreateAdressDto())).resolves.toEqual({
-        statusCode: 200,
+        statusCode: 201,
         adress,
       });
     });
