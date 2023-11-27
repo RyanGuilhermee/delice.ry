@@ -1,0 +1,14 @@
+node_modules
+dist
+.github
+coverage
+test
+.eslintrc.js
+.gitignore
+nest-cli.json
+README.md
+.prettierrc
+prettierignore
+Dockerfile
+docker-compose.yml
+.dockerignore
