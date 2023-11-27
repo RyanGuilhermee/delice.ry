@@ -2,9 +2,9 @@
 
 ### Descrição
 
-**Delice.ry** é uma aplicação de delivery para restaurantes e lanchonetes que buscar facilitar o gerenciamento de pedidos e compras.
+**Delice.ry** é uma aplicação de delivery para restaurantes e lanchonetes que buscam facilitar o gerenciamento de pedidos e compras.
 
-Com um painel dedicado de gerenciamento, o administrador é capaz de visualizar os pedidos em tempo real e alterar o estado do mesmo, assim mantendo o cliente atualizado do progresso da sua compra. Também é possível criar cardápios facilmente e alterar seu status informando se está disponível para compra.
+Com um painel dedicado de gerenciamento, o administrador é capaz de visualizar os pedidos em tempo real e alterar o estado do mesmo, assim mantendo o cliente atualizado do progresso da sua compra. Também é possível criar cardápios facilmente e alterar seu status informando se está disponível para a compra.
 
 Com um sistema de pagamento integrado, o cliente não necessita sair da plataforma para efetuar o pagamento da sua compra, podendo utilizar cartão de crédito ou débito.
 
