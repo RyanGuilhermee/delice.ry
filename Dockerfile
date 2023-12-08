@@ -18,7 +18,6 @@ WORKDIR /usr/src/app
 
 COPY --from=builder usr/src/app/dist ./dist
 COPY --from=builder usr/src/app/prisma ./prisma
-COPY --from=builder usr/src/app/.env ./.env
 
 COPY package*.json ./
 
