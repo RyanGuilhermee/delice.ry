@@ -1,0 +1,19 @@
+name: CD Pipeline
+
+on:
+  workflows_run:
+    workflow: ['CI and Docker Image CI']
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker images
+        run: sudo docker-compose pull
+      - name: Delete old Docker image
+        run: sudo docker-compose down
+      - name: Run Docker container
+        run: sudo docker-compose up -d
